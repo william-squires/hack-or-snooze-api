@@ -36,3 +36,16 @@ function updateNavOnLogin() {
   $navLogOut.show();
   $navUserProfile.text(`${currentUser.username}`).show();
 }
+
+/** SUBMIT NAVBAR */
+
+function navSubmitClick(evt) {
+  evt.preventDefault();
+  hidePageComponents();
+  $submitForm.show();
+  putStoriesOnPage();
+}
+
+$navSubmit.on('click', navSubmitClick);
+// Hide storylist
+// Show the submit form

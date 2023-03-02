@@ -84,6 +84,7 @@ class StoryList {
       headers: { "Content-Type": "application/json" }
 
     }
+
     const response = await axios(config);
     console.log(response.data.story);
     console.log(new Story(response.data.story));
