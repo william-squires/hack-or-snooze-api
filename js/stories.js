@@ -55,13 +55,16 @@ function putStoriesOnPage() {
  *  and displays the story on the screen
 */
 async function submitUserStory(evt) { //TODO: preventdefault
+  evt.preventDefault();
+  console.log("submit function called")
   const author = $('#story-author').val();
   const title = $('#story-title').val();
   const url = $('#story-url').val();
   const storyData = {author, title, url};
-  await storyList.addStory(currentUser, storyData);//TODO: store into variable
-  hidePageComponents();// TODO: just hide form on its own
-  //putStoriesOnPage();//TODO: append new story
+  const userStoryInfo = await storyList.addStory(currentUser, storyData);//TODO: store into variable
+  $submitForm.hide();
+  const userStoryMarkup = generateStoryMarkup(userStoryInfo);
+  $allStoriesList.prepend(userStoryMarkup);
 }
 
 $submitForm.on("submit", submitUserStory);

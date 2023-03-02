@@ -24,8 +24,10 @@ class Story {
   /** Parses hostname out of URL and returns it. */
 
   getHostName() {
-    // UNIMPLEMENTED: complete this function!
-    return "hostname.com";
+    // TODO: UNIMPLEMENTED: complete this function!
+    // javascript url class
+    let currentUrl = new URL(this.url);
+    return currentUrl.hostname;
   }
 }
 
@@ -74,18 +76,24 @@ class StoryList {
    */
   async addStory(user, newStory) {
     let config = {
-      url : BASE_URL,
+      baseURL: BASE_URL,
+      url: "/stories",
       method: "post",
       data: {
-        token : user.loginToken,
-        story : newStory
+        token: user.loginToken,
+        story: newStory
       }
-    }
+    };
 
     const response = await axios(config);
-    console.log(response.data.story);
-    console.log(new Story(response.data.story)); //TODO: add story to list of own stories
-    return new Story(response.data.story);
+    const currentStory = new Story(response.data.story);
+
+    this.stories.push(currentStory);
+
+    user.ownStories.push(currentStory);
+    console.log("the user's stories are: ", user.ownStories);
+
+    return currentStory;
   }
 }
 
@@ -204,4 +212,39 @@ class User {
       return null;
     }
   }
+
+
+  //** USER FAVORITE METHOD */
+
+  async addFavorite(s) {
+    const story = storyList.stories[0];
+    console.log(story);
+
+    // MAKE GET REQUEST
+    const response = await axios({
+      baseURL: BASE_URL,
+      url: `/users/${this.username}/favorites/${story.storyId}`,
+      method: "POST",
+      data: { token: this.loginToken }
+    });
+
+  }
+
+  //** USER UNFAVORITE METHOD */
+
+  async removeFavorite(s) {
+    const story = storyList.stories[0];
+    console.log(story);
+
+    // MAKE GET REQUEST
+    const response = await axios({
+      baseURL: BASE_URL,
+      url: `/users/${this.username}/favorites/${story.storyId}`,
+      method: "DELETE",
+      data: { token: this.loginToken }
+    });
+
+  }
+
+
 }
