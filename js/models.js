@@ -66,28 +66,25 @@ class StoryList {
     return new StoryList(stories);
   }
 
-  /** Adds story data to API, makes a Story instance, adds it to story list.
+  /** Adds story data to API, makes a Story instance,  //TODO: adds it to story list.
    * - user - the current instance of User who will post the story
    * - obj of {title, author, url}
    *
    * Returns the new Story instance
    */
-
   async addStory(user, newStory) {
     let config = {
-      url : "https://hack-or-snooze-v3.herokuapp.com/stories",
+      url : BASE_URL,
       method: "post",
       data: {
-        "token": user.loginToken,
-        "story": newStory
-      },
-      headers: { "Content-Type": "application/json" }
-
+        token : user.loginToken,
+        story : newStory
+      }
     }
 
     const response = await axios(config);
     console.log(response.data.story);
-    console.log(new Story(response.data.story));
+    console.log(new Story(response.data.story)); //TODO: add story to list of own stories
     return new Story(response.data.story);
   }
 }
