@@ -30,7 +30,7 @@ class Story {
 
   /** returns a story object given its storyId */
   static getStoryByID(id) {
-    return storyList.stories.filter( x => x.storyId === id)[0];
+    return storyList.stories.filter(x => x.storyId === id)[0];
   }
 }
 
@@ -219,35 +219,31 @@ class User {
   //** Adds a given story to the user's favorites and updates favorites w/ api post request */
 
   async addFavorite(story) {
-    console.log("at addfavorite");
     const response = await axios({
       baseURL: BASE_URL,
       url: `/users/${this.username}/favorites/${story.storyId}`,
       method: "POST",
       data: { token: this.loginToken }
     });
+
     this.favorites.push(story);
-    console.log("updated favorites after add" ,this.favorites);
   }
 
   //** Removes a given story from the user's favorites and updates favorites w/ api delete request */
 
   async removeFavorite(story) {
-    console.log("at removefavorite");
     const response = await axios({
       baseURL: BASE_URL,
       url: `/users/${this.username}/favorites/${story.storyId}`,
       method: "DELETE",
       data: { token: this.loginToken }
     });
-    // Update function to mutate array rather than create new one
+    
     this.favorites.map((x, i) => {
-      if (x.storyId === story.storyId){
+      if (x.storyId === story.storyId) {
         this.favorites.splice(i, 1);
       }
     })
-
-    console.log("updated favorites after remove" ,this.favorites);
   }
 
 

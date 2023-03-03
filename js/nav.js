@@ -48,6 +48,7 @@ function navSubmitClick(evt) {
 
 $navSubmit.on('click', navSubmitClick);
 
+/** when a user clicks on the favorites button, shows favorite stories */
 function navFavoritesClick(evt) {
   evt.preventDefault();
   hidePageComponents();

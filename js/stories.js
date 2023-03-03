@@ -38,7 +38,6 @@ function generateStoryMarkup(story) {
 }
 
 /** Gets list of stories from server, generates their HTML, and puts on page. */
-
 function putStoriesOnPage() {
   console.debug("putStoriesOnPage");
 
@@ -53,12 +52,12 @@ function putStoriesOnPage() {
   $allStoriesList.show();
 }
 
+
+/** loop through all of our favorite stories and generate HTML for them */
 function putFavoritesOnPage() {
-  console.debug("putStoriesOnPage");
 
   $favoriteStoriesList.empty();
 
-  // loop through all of our stories and generate HTML for them
   for (let story of currentUser.favorites) {
     const $story = generateStoryMarkup(story);
     $favoriteStoriesList.prepend($story);
@@ -72,50 +71,47 @@ function putFavoritesOnPage() {
 */
 async function submitUserStory(evt) {
   evt.preventDefault();
-  console.log("submit function called")
+
   const author = $('#story-author').val();
   const title = $('#story-title').val();
   const url = $('#story-url').val();
   const storyData = {author, title, url};
+
   const userStoryInfo = await storyList.addStory(currentUser, storyData);
-  $submitForm.hide();
   const userStoryMarkup = generateStoryMarkup(userStoryInfo);
+  $submitForm.hide();
   $allStoriesList.prepend(userStoryMarkup);
 }
 
 $submitForm.on("submit", submitUserStory);
-$body.on("click", "i", favoriteOrUnfavorite)
+$body.on("click", ".Heart", toggleFavorite)
 
 /** Calls the removeFavorite or addFavorite after checking if given story is in
  * user's favorites.
  */
-
-async function favoriteOrUnfavorite(evt) {
+async function toggleFavorite(evt) {
   evt.preventDefault();
-  console.log(evt.target)
+
   const id = $(evt.target).closest(".story-id").data("story-id");
   const clickedStory = Story.getStoryByID(id);
+
   if (currentUser.favorites.some(story => story.storyId === clickedStory.storyId)){
     await currentUser.removeFavorite(clickedStory);
-    console.log("this is already one of our favorites");
   } else {
     await currentUser.addFavorite(clickedStory);
-    console.log("this is not one of our favorites");
   }
 
   const favoriteMarkup = generateFavoriteMarkup(currentUser, clickedStory);
   $(evt.target).removeClass('bi bi-heart bi-heart-fill').addClass(favoriteMarkup);
-  console.log(favoriteMarkup)
-
 }
 
+/** takes a user and story, returns the appropriate class to display
+ * whether or not the story is a favorite as a string.
+ */
 function generateFavoriteMarkup(user, story) {
-  // Check if storyId is in user.favorites
-  // Return the correct markup
-  let iconClassName = 'bi bi-heart';
+  let iconClassName = 'bi bi-heart Heart';
   if (user.favorites.some(s => s.storyId === story.storyId)) {
-    iconClassName = 'bi bi-heart-fill';
+    iconClassName = 'bi bi-heart-fill Heart';
   }
-  console.log("Favorite markup is = ", iconClassName)
   return iconClassName;
 }
