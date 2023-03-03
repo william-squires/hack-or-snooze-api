@@ -18,13 +18,17 @@ async function getAndShowStoriesOnStart() {
  *
  * Returns the markup for the story.
  */
-
+//<i class="bi bi-heart"></i>
+//<i class="bi bi-heart-fill"></i>
 function generateStoryMarkup(story) {
   // console.debug("generateStoryMarkup", story);
 
   const hostName = story.getHostName();
   return $(`
-      <li id="${story.storyId}">
+      <li class="story-id" data-story-id="${story.storyId}">
+      <span class="heart">
+        <i class="bi bi-heart"></i>
+      </span>
         <a href="${story.url}" target="a_blank" class="story-link">
           ${story.title}
         </a>
@@ -68,3 +72,17 @@ async function submitUserStory(evt) { //TODO: preventdefault
 }
 
 $submitForm.on("submit", submitUserStory);
+$allStoriesList.on("click", $(".heart"), favoriteOrUnfavorite)
+
+function favoriteOrUnfavorite(evt) {
+  evt.preventDefault();
+  const id = $(evt.target).closest(".story-id").data("story-id");
+  const clickedStory = Story.getStoryByID(id);
+  if (currentUser.favorites.some(story => story.storyId === clickedStory.storyId)){
+    currentUser.removeFavorite(clickedStory);
+    console.log("this is already one of our favorites");
+  } else {
+    currentUser.addFavorite(clickedStory);
+    console.log("this is not one of our favorites");
+  }
+}

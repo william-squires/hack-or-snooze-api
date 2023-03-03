@@ -24,10 +24,14 @@ class Story {
   /** Parses hostname out of URL and returns it. */
 
   getHostName() {
-    // TODO: UNIMPLEMENTED: complete this function!
     // javascript url class
     let currentUrl = new URL(this.url);
     return currentUrl.hostname;
+  }
+
+  /** returns a story object given its storyId */
+  static getStoryByID(id) {
+    return storyList.stories.filter( x => x.storyId === id)[0];
   }
 }
 
@@ -68,7 +72,7 @@ class StoryList {
     return new StoryList(stories);
   }
 
-  /** Adds story data to API, makes a Story instance,  //TODO: adds it to story list.
+  /** Adds story data to API, makes a Story instance,
    * - user - the current instance of User who will post the story
    * - obj of {title, author, url}
    *
@@ -216,34 +220,30 @@ class User {
 
   //** USER FAVORITE METHOD */
 
-  async addFavorite(s) {
-    const story = storyList.stories[0];
-    console.log(story);
-
-    // MAKE GET REQUEST
+  async addFavorite(story) {
+    console.log("at addfavorite");
     const response = await axios({
       baseURL: BASE_URL,
       url: `/users/${this.username}/favorites/${story.storyId}`,
       method: "POST",
       data: { token: this.loginToken }
     });
-
+    this.favorites.push(story);
+    console.log("updated favorites after add" ,this.favorites);
   }
 
   //** USER UNFAVORITE METHOD */
 
-  async removeFavorite(s) {
-    const story = storyList.stories[0];
-    console.log(story);
-
-    // MAKE GET REQUEST
+  async removeFavorite(story) {
+    console.log("at removefavorite");
     const response = await axios({
       baseURL: BASE_URL,
       url: `/users/${this.username}/favorites/${story.storyId}`,
       method: "DELETE",
       data: { token: this.loginToken }
     });
-
+    this.favorites = this.favorites.filter( x => x.storyId != story.storyId);
+    console.log("updated favorites after remove" ,this.favorites);
   }
 
 
