@@ -20,6 +20,7 @@ async function getAndShowStoriesOnStart() {
  */
 function generateStoryMarkup(story) {
 
+  console.log('generateStoryMarkup is using story: ', story)
   const iconClassName = generateFavoriteMarkup(currentUser, story);//TODO: get rid of span probably, heart vs Heart
   const hostName = story.getHostName();
   return $(`
@@ -55,10 +56,11 @@ function putStoriesOnPage() {
 
 /** loop through all of our favorite stories and generate HTML for them */
 function putFavoritesOnPage() {
-
+  console.log("putFavoritesOnPage called!")
   $favoriteStoriesList.empty();
 
   for (let story of currentUser.favorites) {
+    console.log(story instanceof Story);
     const $story = generateStoryMarkup(story);
     $favoriteStoriesList.prepend($story);
   }
@@ -93,7 +95,9 @@ async function toggleFavorite(evt) {
   evt.preventDefault();
 
   const id = $(evt.target).closest(".story-id").data("story-id");
-  const clickedStory = Story.getStoryByID(id);
+  const clickedStory = await Story.getStoryByID(id);
+  console.log("toggle favorites is using clickedStory: ", clickedStory)
+  console.log("the clicked story is a story? ")
 
   if (currentUser.favorites.some(story => story.storyId === clickedStory.storyId)){
     await currentUser.removeFavorite(clickedStory);
