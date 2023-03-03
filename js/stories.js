@@ -20,7 +20,7 @@ async function getAndShowStoriesOnStart() {
  */
 function generateStoryMarkup(story) {
 
-  const iconClassName = generateFavoriteMarkup(currentUser, story);
+  const iconClassName = generateFavoriteMarkup(currentUser, story);//TODO: get rid of span probably, heart vs Heart
   const hostName = story.getHostName();
   return $(`
       <li class="story-id" data-story-id="${story.storyId}">

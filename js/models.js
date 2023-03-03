@@ -29,7 +29,7 @@ class Story {
   }
 
   /** returns a story object given its storyId */
-  static getStoryByID(id) {
+  static getStoryByID(id) { //TODO: find instead of filter, it shortcircuits
     return storyList.stories.filter(x => x.storyId === id)[0];
   }
 }
@@ -228,8 +228,8 @@ class User {
 
     this.favorites.push(story);
   }
-
-  //** Removes a given story from the user's favorites and updates favorites w/ api delete request */
+  //TODO: make sure code fits in lines, docstrings with single comments, look at lighting up docstrings in vscode
+  /** Removes a given story from the user's favorites and updates favorites w/ api delete request */
 
   async removeFavorite(story) {
     const response = await axios({
@@ -238,7 +238,7 @@ class User {
       method: "DELETE",
       data: { token: this.loginToken }
     });
-    
+    // TODO: findIndex(cb), returns index
     this.favorites.map((x, i) => {
       if (x.storyId === story.storyId) {
         this.favorites.splice(i, 1);
