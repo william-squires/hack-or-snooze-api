@@ -21,13 +21,13 @@ async function getAndShowStoriesOnStart() {
 //<i class="bi bi-heart"></i>
 //<i class="bi bi-heart-fill"></i>
 function generateStoryMarkup(story) {
-  // console.debug("generateStoryMarkup", story);
 
+  const iconClassName = generateFavoriteMarkup(currentUser, story);
   const hostName = story.getHostName();
   return $(`
       <li class="story-id" data-story-id="${story.storyId}">
       <span class="heart">
-        <i class="bi bi-heart"></i>
+        <i class="${iconClassName}"></i>
       </span>
         <a href="${story.url}" target="a_blank" class="story-link">
           ${story.title}
@@ -72,21 +72,38 @@ async function submitUserStory(evt) {
 }
 
 $submitForm.on("submit", submitUserStory);
-$allStoriesList.on("click", $(".heart"), favoriteOrUnfavorite)
+$allStoriesList.on("click", "i", favoriteOrUnfavorite)
 
 /** Calls the removeFavorite or addFavorite after checking if given story is in
  * user's favorites.
  */
 
-function favoriteOrUnfavorite(evt) {
+async function favoriteOrUnfavorite(evt) {
   evt.preventDefault();
+  console.log(evt.target)
   const id = $(evt.target).closest(".story-id").data("story-id");
   const clickedStory = Story.getStoryByID(id);
   if (currentUser.favorites.some(story => story.storyId === clickedStory.storyId)){
-    currentUser.removeFavorite(clickedStory);
+    await currentUser.removeFavorite(clickedStory);
     console.log("this is already one of our favorites");
   } else {
-    currentUser.addFavorite(clickedStory);
+    await currentUser.addFavorite(clickedStory);
     console.log("this is not one of our favorites");
   }
+
+  const favoriteMarkup = generateFavoriteMarkup(currentUser, clickedStory);
+  $(evt.target).removeClass().addClass(favoriteMarkup);
+  console.log(favoriteMarkup)
+
+}
+
+function generateFavoriteMarkup(user, story) {
+  // Check if storyId is in user.favorites
+  // Return the correct markup
+  let iconClassName = 'bi bi-heart';
+  if (user.favorites.some(s => s.storyId === story.storyId)) {
+    iconClassName = 'bi bi-heart-fill';
+  }
+  console.log("Favorite markup is = ", iconClassName)
+  return iconClassName;
 }
