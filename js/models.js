@@ -36,7 +36,7 @@ class Story {
       url: `/stories/${id}`,
     };
     let response = await axios(config);
-    return response.data.story;
+    return new Story(response.data.story);
   }
 }
 
@@ -98,8 +98,8 @@ class StoryList {
     const currentStory = new Story(response.data.story);
 
     // Adds current story to storylist and user's stories, returns current story
-    this.stories.push(currentStory);
-    user.ownStories.push(currentStory);
+    this.stories.unshift(currentStory);
+    user.ownStories.unshift(currentStory);
 
     return currentStory;
   }
@@ -222,7 +222,8 @@ class User {
   }
 
 
-  //** Adds a given story to the user's favorites and updates favorites w/ api post request */
+  /** Adds a given story to the user's favorites and updates favorites w/ api
+   *  post request */
 
   async addFavorite(story) {
     console.log("addFavorites is using: ", story);
@@ -236,8 +237,10 @@ class User {
 
     this.favorites.unshift(story);
   }
-  //TODO: make sure code fits in lines, docstrings with single comments, look at lighting up docstrings in vscode
-  /** Removes a given story from the user's favorites and updates favorites w/ api delete request */
+  //TODO: make sure code fits in lines, docstrings with single comments, look
+  // at lighting up docstrings in vscode
+  /** Removes a given story from the user's favorites and updates favorites w/
+   * api delete request */
 
   async removeFavorite(story) {
     const response = await axios({
@@ -247,11 +250,10 @@ class User {
       data: { token: this.loginToken }
     });
     // TODO: findIndex(cb), returns index
-    this.favorites.map((x, i) => {
-      if (x.storyId === story.storyId) {
-        this.favorites.splice(i, 1);
-      }
-    });
+    let storyIndex = this.favorites.findIndex(x => x.storyId === story.storyId);
+    console.log('the story index is: ', storyIndex);
+    this.favorites.splice(storyIndex, 1);
+
   }
 
 

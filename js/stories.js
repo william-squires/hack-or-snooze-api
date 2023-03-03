@@ -97,7 +97,7 @@ async function toggleFavorite(evt) {
   const id = $(evt.target).closest(".story-id").data("story-id");
   const clickedStory = await Story.getStoryByID(id);
   console.log("toggle favorites is using clickedStory: ", clickedStory)
-  console.log("the clicked story is a story? ")
+  console.log("the clicked story is a story? ", clickedStory instanceof Story)
 
   if (currentUser.favorites.some(story => story.storyId === clickedStory.storyId)){
     await currentUser.removeFavorite(clickedStory);
