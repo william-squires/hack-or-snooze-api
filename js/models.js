@@ -24,7 +24,6 @@ class Story {
   /** Parses hostname out of URL and returns it. */
 
   getHostName() {
-    // javascript url class
     let currentUrl = new URL(this.url);
     return currentUrl.hostname;
   }
@@ -92,10 +91,9 @@ class StoryList {
     const response = await axios(config);
     const currentStory = new Story(response.data.story);
 
+    // Adds current story to storylist and user's stories, returns current story
     this.stories.push(currentStory);
-
     user.ownStories.push(currentStory);
-    console.log("the user's stories are: ", user.ownStories);
 
     return currentStory;
   }
@@ -218,7 +216,7 @@ class User {
   }
 
 
-  //** USER FAVORITE METHOD */
+  //** Adds a given story to the user's favorites and updates favorites w/ api post request */
 
   async addFavorite(story) {
     console.log("at addfavorite");
@@ -232,7 +230,7 @@ class User {
     console.log("updated favorites after add" ,this.favorites);
   }
 
-  //** USER UNFAVORITE METHOD */
+  //** Removes a given story from the user's favorites and updates favorites w/ api delete request */
 
   async removeFavorite(story) {
     console.log("at removefavorite");
@@ -242,7 +240,13 @@ class User {
       method: "DELETE",
       data: { token: this.loginToken }
     });
-    this.favorites = this.favorites.filter( x => x.storyId != story.storyId);
+    // Update function to mutate array rather than create new one
+    this.favorites.map((x, i) => {
+      if (x.storyId === story.storyId){
+        this.favorites.splice(i, 1);
+      }
+    })
+
     console.log("updated favorites after remove" ,this.favorites);
   }
 

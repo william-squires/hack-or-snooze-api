@@ -44,9 +44,6 @@ function navSubmitClick(evt) {
   hidePageComponents();
   $submitForm.show();
   $allStoriesList.show();
-  //putStoriesOnPage(); 
 }
 
 $navSubmit.on('click', navSubmitClick);
-// Hide storylist
-// Show the submit form

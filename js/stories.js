@@ -58,14 +58,14 @@ function putStoriesOnPage() {
 /** takes form data, submits a story to the api,
  *  and displays the story on the screen
 */
-async function submitUserStory(evt) { //TODO: preventdefault
+async function submitUserStory(evt) {
   evt.preventDefault();
   console.log("submit function called")
   const author = $('#story-author').val();
   const title = $('#story-title').val();
   const url = $('#story-url').val();
   const storyData = {author, title, url};
-  const userStoryInfo = await storyList.addStory(currentUser, storyData);//TODO: store into variable
+  const userStoryInfo = await storyList.addStory(currentUser, storyData);
   $submitForm.hide();
   const userStoryMarkup = generateStoryMarkup(userStoryInfo);
   $allStoriesList.prepend(userStoryMarkup);
@@ -73,6 +73,10 @@ async function submitUserStory(evt) { //TODO: preventdefault
 
 $submitForm.on("submit", submitUserStory);
 $allStoriesList.on("click", $(".heart"), favoriteOrUnfavorite)
+
+/** Calls the removeFavorite or addFavorite after checking if given story is in
+ * user's favorites.
+ */
 
 function favoriteOrUnfavorite(evt) {
   evt.preventDefault();
