@@ -47,3 +47,11 @@ function navSubmitClick(evt) {
 }
 
 $navSubmit.on('click', navSubmitClick);
+
+function navFavoritesClick(evt) {
+  evt.preventDefault();
+  hidePageComponents();
+  putFavoritesOnPage();
+}
+
+$navFavorites.on("click", navFavoritesClick);

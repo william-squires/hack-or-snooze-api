@@ -18,8 +18,6 @@ async function getAndShowStoriesOnStart() {
  *
  * Returns the markup for the story.
  */
-//<i class="bi bi-heart"></i>
-//<i class="bi bi-heart-fill"></i>
 function generateStoryMarkup(story) {
 
   const iconClassName = generateFavoriteMarkup(currentUser, story);
@@ -55,6 +53,20 @@ function putStoriesOnPage() {
   $allStoriesList.show();
 }
 
+function putFavoritesOnPage() {
+  console.debug("putStoriesOnPage");
+
+  $favoriteStoriesList.empty();
+
+  // loop through all of our stories and generate HTML for them
+  for (let story of currentUser.favorites) {
+    const $story = generateStoryMarkup(story);
+    $favoriteStoriesList.prepend($story);
+  }
+
+  $favoriteStoriesList.show();
+}
+
 /** takes form data, submits a story to the api,
  *  and displays the story on the screen
 */
@@ -72,7 +84,7 @@ async function submitUserStory(evt) {
 }
 
 $submitForm.on("submit", submitUserStory);
-$allStoriesList.on("click", "i", favoriteOrUnfavorite)
+$body.on("click", "i", favoriteOrUnfavorite)
 
 /** Calls the removeFavorite or addFavorite after checking if given story is in
  * user's favorites.
@@ -92,7 +104,7 @@ async function favoriteOrUnfavorite(evt) {
   }
 
   const favoriteMarkup = generateFavoriteMarkup(currentUser, clickedStory);
-  $(evt.target).removeClass().addClass(favoriteMarkup);
+  $(evt.target).removeClass('bi bi-heart bi-heart-fill').addClass(favoriteMarkup);
   console.log(favoriteMarkup)
 
 }
