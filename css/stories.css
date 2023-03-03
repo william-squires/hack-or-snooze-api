@@ -38,8 +38,6 @@
   display: block;
 }
 
-/* Favorites Buttons */
-/* Use better selector */
-i {
+.Heart {
   cursor: pointer;
 }

@@ -28,8 +28,8 @@ class Story {
     return currentUrl.hostname;
   }
 
-  /** returns a story object given its storyId */
-  static async getStoryByID(id) { //TODO: find instead of filter, it shortcircuits
+  /** returns a story object from API given its storyId */
+  static async getStoryByID(id) {
     const config = {
       method: "GET",
       baseURL: BASE_URL,
@@ -226,9 +226,7 @@ class User {
    *  post request */
 
   async addFavorite(story) {
-    console.log("addFavorites is using: ", story);
-    console.log("is it a Story?", story instanceof Story);
-    const response = await axios({
+    await axios({
       baseURL: BASE_URL,
       url: `/users/${this.username}/favorites/${story.storyId}`,
       method: "POST",
@@ -237,24 +235,34 @@ class User {
 
     this.favorites.unshift(story);
   }
-  //TODO: make sure code fits in lines, docstrings with single comments, look
-  // at lighting up docstrings in vscode
   /** Removes a given story from the user's favorites and updates favorites w/
    * api delete request */
 
   async removeFavorite(story) {
-    const response = await axios({
+    await axios({
       baseURL: BASE_URL,
       url: `/users/${this.username}/favorites/${story.storyId}`,
       method: "DELETE",
       data: { token: this.loginToken }
     });
-    // TODO: findIndex(cb), returns index
-    let storyIndex = this.favorites.findIndex(x => x.storyId === story.storyId);
-    console.log('the story index is: ', storyIndex);
+    let storyIndex = this.favorites.findIndex(
+      x => x.storyId === story.storyId);
     this.favorites.splice(storyIndex, 1);
 
   }
-
+  /** Deletes a story that the user has posted, both in local memory and through
+   * the API
+   */
+  async deleteStory(story) {
+    await axios({
+      baseURL: BASE_URL,
+      url: `/stories/${story.storyId}`,
+      method: 'DELETE',
+      data: { token: this.loginToken }
+    });
+    let storyIndex = this.ownStories.findIndex(
+      x => x.storyId === story.storyId);
+      this.ownStories.splice(storyIndex, 1);
+  }
 
 }

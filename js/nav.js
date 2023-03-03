@@ -56,3 +56,12 @@ function navFavoritesClick(evt) {
 }
 
 $navFavorites.on("click", navFavoritesClick);
+
+/** when a user clicks on the favorites button, shows favorite stories */
+function navOwnStoriesClick(evt) {
+  evt.preventDefault();
+  hidePageComponents();
+  putOwnStoriesOnPage();
+}
+
+$navOwnStories.on("click", navOwnStoriesClick);

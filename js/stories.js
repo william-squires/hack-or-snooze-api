@@ -20,14 +20,11 @@ async function getAndShowStoriesOnStart() {
  */
 function generateStoryMarkup(story) {
 
-  console.log('generateStoryMarkup is using story: ', story)
-  const iconClassName = generateFavoriteMarkup(currentUser, story);//TODO: get rid of span probably, heart vs Heart
+  const iconClassName = generateFavoriteMarkup(currentUser, story);
   const hostName = story.getHostName();
   return $(`
       <li class="story-id" data-story-id="${story.storyId}">
-      <span class="heart">
         <i class="${iconClassName}"></i>
-      </span>
         <a href="${story.url}" target="a_blank" class="story-link">
           ${story.title}
         </a>
@@ -36,6 +33,17 @@ function generateStoryMarkup(story) {
         <small class="story-user">posted by ${story.username}</small>
       </li>
     `);
+}
+
+/** takes a user and story, returns the appropriate class to display
+ * whether or not the story is a favorite as a string.
+ */
+function generateFavoriteMarkup(user, story) {
+  let iconClassName = 'bi bi-heart Heart';
+  if (user.favorites.some(s => s.storyId === story.storyId)) {
+    iconClassName = 'bi bi-heart-fill Heart';
+  }
+  return iconClassName;
 }
 
 /** Gets list of stories from server, generates their HTML, and puts on page. */
@@ -60,7 +68,6 @@ function putFavoritesOnPage() {
   $favoriteStoriesList.empty();
 
   for (let story of currentUser.favorites) {
-    console.log(story instanceof Story);
     const $story = generateStoryMarkup(story);
     $favoriteStoriesList.prepend($story);
   }
@@ -68,6 +75,15 @@ function putFavoritesOnPage() {
   $favoriteStoriesList.show();
 }
 
+/** loop through all of our own stories and generate HTML for them */
+function putOwnStoriesOnPage() {
+  $ownStoriesList.empty();
+  for (let story of currentUser.ownStories) {
+    const $story = generateStoryMarkup(story);
+    $ownStoriesList.prepend($story);
+  }
+  $ownStoriesList.show();
+}
 /** takes form data, submits a story to the api,
  *  and displays the story on the screen
 */
@@ -77,7 +93,7 @@ async function submitUserStory(evt) {
   const author = $('#story-author').val();
   const title = $('#story-title').val();
   const url = $('#story-url').val();
-  const storyData = {author, title, url};
+  const storyData = { author, title, url };
 
   const userStoryInfo = await storyList.addStory(currentUser, storyData);
   const userStoryMarkup = generateStoryMarkup(userStoryInfo);
@@ -96,26 +112,17 @@ async function toggleFavorite(evt) {
 
   const id = $(evt.target).closest(".story-id").data("story-id");
   const clickedStory = await Story.getStoryByID(id);
-  console.log("toggle favorites is using clickedStory: ", clickedStory)
-  console.log("the clicked story is a story? ", clickedStory instanceof Story)
 
-  if (currentUser.favorites.some(story => story.storyId === clickedStory.storyId)){
+  if (currentUser.favorites.find(
+    story => story.storyId === clickedStory.storyId)) {
     await currentUser.removeFavorite(clickedStory);
   } else {
     await currentUser.addFavorite(clickedStory);
   }
 
   const favoriteMarkup = generateFavoriteMarkup(currentUser, clickedStory);
-  $(evt.target).removeClass('bi bi-heart bi-heart-fill').addClass(favoriteMarkup);
+  $(evt.target)
+    .removeClass('bi bi-heart bi-heart-fill')
+    .addClass(favoriteMarkup);
 }
 
-/** takes a user and story, returns the appropriate class to display
- * whether or not the story is a favorite as a string.
- */
-function generateFavoriteMarkup(user, story) {
-  let iconClassName = 'bi bi-heart Heart';
-  if (user.favorites.some(s => s.storyId === story.storyId)) {
-    iconClassName = 'bi bi-heart-fill Heart';
-  }
-  return iconClassName;
-}
