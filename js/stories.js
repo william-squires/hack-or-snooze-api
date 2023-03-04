@@ -24,7 +24,9 @@ function generateStoryMarkup(story) {
   const hostName = story.getHostName();
   return $(`
       <li class="story-id" data-story-id="${story.storyId}">
+      <span class="btns-container">
         <i class="${iconClassName}"></i>
+        </span>
         <a href="${story.url}" target="a_blank" class="story-link">
           ${story.title}
         </a>
@@ -64,7 +66,7 @@ function putStoriesOnPage() {
 
 /** loop through all of our favorite stories and generate HTML for them */
 function putFavoritesOnPage() {
-  console.log("putFavoritesOnPage called!")
+  console.log("putFavoritesOnPage called!");
   $favoriteStoriesList.empty();
 
   for (let story of currentUser.favorites) {
@@ -79,8 +81,10 @@ function putFavoritesOnPage() {
 function putOwnStoriesOnPage() {
   $ownStoriesList.empty();
   for (let story of currentUser.ownStories) {
+
     const $story = generateStoryMarkup(story);
     $ownStoriesList.prepend($story);
+    $(".btns-container").prepend('<i class="Trash bi bi-trash3"></i>');
   }
   $ownStoriesList.show();
 }
@@ -102,7 +106,7 @@ async function submitUserStory(evt) {
 }
 
 $submitForm.on("submit", submitUserStory);
-$body.on("click", ".Heart", toggleFavorite)
+$body.on("click", ".Heart", toggleFavorite);
 
 /** Calls the removeFavorite or addFavorite after checking if given story is in
  * user's favorites.
@@ -124,5 +128,19 @@ async function toggleFavorite(evt) {
   $(evt.target)
     .removeClass('bi bi-heart bi-heart-fill')
     .addClass(favoriteMarkup);
+}
+
+/** Handles deletion of stories from both the DOM and API */
+
+$body.on("click", ".Trash", handleDelete);
+
+async function handleDelete(evt) {
+  evt.preventDefault();
+
+  const id = $(evt.target).closest(".story-id").data("story-id");
+  const storyToDelete = await Story.getStoryByID(id);
+
+  currentUser.deleteStory(storyToDelete);
+  $(evt.target).closest(".story-id").remove();
 }
 
