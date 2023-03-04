@@ -81,11 +81,11 @@ function putFavoritesOnPage() {
 function putOwnStoriesOnPage() {
   $ownStoriesList.empty();
   for (let story of currentUser.ownStories) {
-
     const $story = generateStoryMarkup(story);
     $ownStoriesList.prepend($story);
-    $(".btns-container").prepend('<i class="Trash bi bi-trash3"></i>');
   }
+
+  $(".btns-container").prepend('<i class="Trash bi bi-trash3"></i>');
   $ownStoriesList.show();
 }
 /** takes form data, submits a story to the api,

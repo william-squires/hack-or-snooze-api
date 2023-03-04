@@ -250,8 +250,7 @@ class User {
     this.favorites.splice(storyIndex, 1);
 
   }
-  /** Deletes a story that the user has posted, both in local memory and through
-   * the API
+  /** Deletes a story that the user has posted via API call
    */
   async deleteStory(story) {
     await axios({
